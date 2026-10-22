@@ -1,0 +1,162 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: leads
+// Document ID: {leadId} (auto-generated ID)
+// Fields:
+//   - name: string (required, 1..120 chars, immutable) - Lead contact full name
+//   - email: string (required, 3..160 chars, valid email containing '@', immutable) - Work email address
+//   - company: string (required, 1..160 chars, immutable) - Company, studio, or executive office name
+//   - track: string (required, enum ['freelance', 'fulltime'], immutable) - Selected inquiry track
+//   - recommendedTier: string (optional, 0..120 chars, immutable) - Diagnostic calculator recommended retainer tier
+//   - estimatedMonthlyHoursSaved: number (optional, 0..500, immutable) - Estimated monthly executive hours reclaimed
+//   - message: string (required, 1..4000 chars, immutable) - Inquiry details / operational bottlenecks
+//   - createdAt: string (required, 1..64 chars, ISO-8601 timestamp string, immutable) - Submission timestamp
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource (for user-owned documents)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user is owner based on document's uid field
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    // Verify UID hasn't been tampered with on create
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+        request.resource.data.uid == request.auth.uid;
+    }
+
+    // Ensure uid field is not modified on update
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+        request.resource.data.uid == resource.data.uid;
+    }
+
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate string length
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate optional string (if present, must be string and within length)
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+        (request.resource.data[field] is string &&
+          request.resource.data[field].size() >= minLen &&
+          request.resource.data[field].size() <= maxLen);
+    }
+
+    // Validate optional number within range
+    function isValidOptionalNumber(field, minVal, maxVal) {
+      return !(field in request.resource.data) ||
+        (request.resource.data[field] is number &&
+          request.resource.data[field] >= minVal &&
+          request.resource.data[field] <= maxVal);
+    }
+
+    // Validate email format (must contain '@' and valid domain structure)
+    function isValidEmail(email) {
+      return email is string &&
+        email.size() >= 3 &&
+        email.size() <= 160 &&
+        email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+    }
+
+    // Validate ISO 8601 date string format (YYYY-MM-DDTHH:MM:SS)
+    // CRITICAL: Validates format and length bounds for client-supplied ISO timestamps.
+    function isValidDateString(dateStr) {
+      return dateStr is string &&
+        dateStr.size() >= 1 &&
+        dateStr.size() <= 64 &&
+        dateStr.matches('^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$');
+    }
+
+    // Validate that immutable fields have not changed on update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidLeadSubmission(data) {
+      return hasOnlyAllowedFields([
+          'name',
+          'email',
+          'company',
+          'track',
+          'recommendedTier',
+          'estimatedMonthlyHoursSaved',
+          'message',
+          'createdAt'
+        ]) &&
+        hasRequiredFields([
+          'name',
+          'email',
+          'company',
+          'track',
+          'message',
+          'createdAt'
+        ]) &&
+        validStringLength('name', 1, 120) &&
+        isValidEmail(data.email) &&
+        validStringLength('company', 1, 160) &&
+        data.track is string &&
+        data.track in ['freelance', 'fulltime'] &&
+        isValidOptionalString('recommendedTier', 0, 120) &&
+        isValidOptionalNumber('estimatedMonthlyHoursSaved', 0, 500) &&
+        validStringLength('message', 1, 4000) &&
+        isValidDateString(data.createdAt);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Public write-only lead capture dropbox for Dual-Track Contact form.
+    // Contains PII (name, email, company, message); strictly read-protected from clients.
+    match /leads/{leadId} {
+      allow create: if isValidLeadSubmission(request.resource.data);
+      allow read, update, delete: if false;
+    }
+
+    // Default deny all other collections and documents
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

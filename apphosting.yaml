@@ -1,0 +1,34 @@
+# Firebase App Hosting configuration for dawn.webintelagent.com
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  - variable: NEXT_PUBLIC_SITE_URL
+    value: "https://dawn.webintelagent.com"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_STRIPE_AUDIT_URL
+    value: "https://buy.stripe.com/test_audit_90min"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_STRIPE_DEFENSE_URL
+    value: "https://buy.stripe.com/test_retainer_40hr"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_STRIPE_OBM_URL
+    value: "https://buy.stripe.com/test_retainer_80hr"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_CALENDAR_BOOKING_URL
+    value: "https://cal.com/dawn-maley/discovery"
+    availability:
+      - BUILD
+      - RUNTIME
