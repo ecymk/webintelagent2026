@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import HeroRouter from "@/components/HeroRouter";
 import TimeBackCalculator from "@/components/TimeBackCalculator";
 import CaseStudyGrid from "@/components/CaseStudyGrid";
+import ExecutiveResumeSection from "@/components/ExecutiveResumeSection";
 import RetainerTiers from "@/components/RetainerTiers";
 import DualTrackContact from "@/components/DualTrackContact";
 import { BRAND_CONFIG } from "@/config/siteData";
@@ -46,8 +47,8 @@ export default function HomePage() {
         <HeroRouter mode={mode} onModeChange={setMode} userEmail={userEmail} />
 
         {/* Dynamic Priority Ordering:
-            In Fractional Mode -> Calculator first, then Case Studies.
-            In Full-Time Mode  -> Case Studies first, then Calculator. */}
+            In Fractional Mode -> Calculator -> Case Studies -> Compact Resume Dossier.
+            In Full-Time Mode  -> Full Interactive Resume Dossier -> Case Studies -> Calculator. */}
         {mode === "freelance" ? (
           <>
             <TimeBackCalculator
@@ -56,9 +57,11 @@ export default function HomePage() {
               onDiagnosticUpdate={handleDiagnosticUpdate}
             />
             <CaseStudyGrid />
+            <ExecutiveResumeSection mode={mode} />
           </>
         ) : (
           <>
+            <ExecutiveResumeSection mode={mode} />
             <CaseStudyGrid />
             <TimeBackCalculator
               mode={mode}
@@ -90,6 +93,15 @@ export default function HomePage() {
             </span>
             <span className="text-neutral-700">•</span>
             <a
+              href="https://www.linkedin.com/in/amanda-dawn-maley/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+            >
+              LinkedIn
+            </a>
+            <span className="text-neutral-700">•</span>
+            <a
               href="https://webintelagent.com"
               target="_blank"
               rel="noopener noreferrer"
@@ -99,7 +111,8 @@ export default function HomePage() {
             </a>
           </div>
           <p className="text-xs text-neutral-500">
-            C-Suite Executive Operations • Entertainment, Gaming &amp; Tech
+            Chief of Staff • Online Business Manager • Senior Executive
+            Assistant
           </p>
         </div>
       </footer>

@@ -7,6 +7,14 @@ export type CaseStudyCategory =
   | "Global Travel"
   | "C-Suite Support";
 
+export type ResumeTrackLens =
+  | "All"
+  | "Chief of Staff"
+  | "Online Business Manager"
+  | "Executive Assistant";
+
+export type ResumeCoreTrack = Exclude<ResumeTrackLens, "All">;
+
 export interface CaseStudy {
   id: string;
   company: string;
@@ -59,4 +67,58 @@ export interface DiagnosticSliderConfig {
   step: number;
   defaultValue: number;
   unit: string;
+}
+
+export interface ResumePillar {
+  title: string;
+  track: ResumeCoreTrack;
+  items: string[];
+}
+
+export interface ResumeRoleBullet {
+  lead: string;
+  detail: string;
+}
+
+export interface ResumeRole {
+  id: string;
+  company: string;
+  descriptor?: string;
+  location: string;
+  period: string;
+  title: string;
+  tracks: ResumeCoreTrack[];
+  bullets: ResumeRoleBullet[];
+  featured?: boolean;
+}
+
+export interface ResumeEndorsement {
+  id: string;
+  quote: string;
+  author: string;
+  context: string;
+}
+
+export interface ExecutiveResumeData {
+  fullName: string;
+  subtitle: string;
+  location: string;
+  phone: string;
+  linkedinUrl: string;
+  linkedinLabel: string;
+  summary: string;
+  pillars: ResumePillar[];
+  roles: ResumeRole[];
+  education: {
+    institution: string;
+    degree: string;
+    locationYear: string;
+    honors: string[];
+    languages: string[];
+  };
+  systems: {
+    category: string;
+    detail: string;
+  }[];
+  endorsements: ResumeEndorsement[];
 }

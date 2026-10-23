@@ -22,7 +22,7 @@ export default function Navbar({ mode }: NavbarProps) {
         </a>
 
         <nav
-          className="hidden items-center gap-8 sm:flex"
+          className="hidden items-center gap-7 sm:flex"
           aria-label="Primary navigation"
         >
           <a
@@ -35,7 +35,13 @@ export default function Navbar({ mode }: NavbarProps) {
             href="#case-studies"
             className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
           >
-            Experience
+            Case Studies
+          </a>
+          <a
+            href="#resume"
+            className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+          >
+            Resume
           </a>
           <a
             href="#retainers"
@@ -46,10 +52,10 @@ export default function Navbar({ mode }: NavbarProps) {
         </nav>
 
         <a
-          href={mode === "freelance" ? "#retainers" : "#contact"}
+          href={mode === "freelance" ? "#retainers" : "#resume"}
           className="rounded-lg bg-neutral-100 px-4 py-2 text-xs font-medium text-neutral-950 transition-colors hover:bg-neutral-300"
         >
-          {mode === "freelance" ? "Work Together" : "Request Dossier"}
+          {mode === "freelance" ? "Work Together" : "Executive Resume"}
         </a>
       </div>
     </header>

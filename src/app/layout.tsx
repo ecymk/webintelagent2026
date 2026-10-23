@@ -18,16 +18,18 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dawn.webintelagent.com"),
-  title: "Dawn Maley — C-Suite Executive Operations & Fractional OBM",
+  title:
+    "Amanda Dawn Maley — Chief of Staff, Online Business Manager & Senior EA",
   description:
-    "Senior C-Suite Executive Operations Partner and Fractional Online Business Manager (OBM) across entertainment, gaming, and tech. Proven Calendar Defense, Inbox Triage Architecture, and Studio Logistics at Sony Interactive Entertainment, Crunchyroll, and Trailer Park Group.",
+    "Executive Operations Partner, Chief of Staff, and Fractional Online Business Manager (OBM) with 10+ years across Sony Interactive Entertainment (PlayStation), Sony Pictures Entertainment, Crunchyroll, MALKA Media, and Trailer Park Group.",
   alternates: {
     canonical: "https://dawn.webintelagent.com",
   },
   openGraph: {
-    title: "Dawn Maley — C-Suite Executive Operations & Fractional OBM",
+    title:
+      "Amanda Dawn Maley — Chief of Staff, Online Business Manager & Senior EA",
     description:
-      "Protect Your Creative Vision. Reclaim Your Calendar. Fractional OBM & Full-Time C-Suite Executive Operations across Entertainment, Gaming & Tech.",
+      "Protect Your Creative Vision. Reclaim Your Calendar. Fractional OBM, Chief of Staff & C-Suite Executive Operations across Entertainment, Gaming & Tech.",
     url: "https://dawn.webintelagent.com",
     siteName: "Dawn Maley Executive Operations",
     locale: "en_US",
@@ -36,11 +38,13 @@ export const metadata: Metadata = {
   keywords: [
     "Dawn Maley",
     "Amanda Dawn Maley",
-    "Fractional Executive Assistant",
+    "Chief of Staff",
     "Online Business Manager",
+    "Senior Executive Assistant",
     "C-Suite Executive Operations Partner",
-    "Calendar Defense",
+    "Oracle ERP Purchase Orders",
     "Sony Interactive Entertainment",
+    "Sony Pictures Entertainment",
     "Crunchyroll",
     "Trailer Park Group",
   ],
